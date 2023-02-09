@@ -2,22 +2,31 @@ import tensorflow as tf
 import numpy as np
 import h5py
 import cv2
+import pickle
 
-physical_devices = tf.config.experimental.list_physical_devices('GPU')
-if len(physical_devices) > 0:
-    tf.config.experimental.set_memory_growth(physical_devices[0], True)
-    tf.config.experimental.set_visible_devices(physical_devices, 'GPU')
-else:
-    print("No GPU found. Running on CPU.")
+# write list to binary file
+def write_list(a_list):
+    # store list in binary file so 'wb' mode
+    with open('/home/bob/fungi-id-ai/model/fungi_model_texts_filtered_20.bin', 'wb') as fp:
+        pickle.dump(a_list, fp)
+        print('Done writing list into a binary file')
+
+# Read list to memory
+def read_list():
+    # for reading also binary mode is important
+    with open('/home/bob/fungi-id-ai/model/fungi_model_texts_filtered_20.bin', 'rb') as fp:
+        n_list = pickle.load(fp)
+        return n_list
 
 # Open the HDF5 dataset file
-h5f = h5py.File('D:/PROJLIB/Python/fungi_id/model/fungi_model.h5', 'r')
+h5f = h5py.File('/home/bob/fungi-id-ai/model/fungi_model_filtered_20.h5', 'r')
 
 # Load the data from the HDF5 file
-model = tf.keras.models.load_model('D:/PROJLIB/Python/fungi_id/model/fungi_pretrained_model_gpu.h5')
+# model = tf.keras.models.load_model('/home/bob/fungi-id-ai/model/fungi_pretrained_model_rgb_128_full_gpu.h5')
+model = tf.keras.models.load_model('/home/bob/fungi-id-ai/model/fungi_pretrained_model_filtered_20.h5')
 
 # Load the image
-image = cv2.imread('D:/PROJLIB/Python/fungi_id/data/image.jpg', cv2.IMREAD_COLOR)
+image = cv2.imread('/home/bob/fungi-id-ai/data/image_4.jpg', cv2.IMREAD_COLOR)
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 # Crop the image
@@ -52,14 +61,14 @@ predicted_class = np.argmax(prediction[0])
 # Get the label of the predicted class
 class_labels = h5f['labels'][:]
 unique_classes = np.unique(class_labels)
-predicted_label = unique_classes[predicted_class]
+predicted_label = read_list()[predicted_class]
 
 print("The predicted label for the new image is:", predicted_label)
 
 # Calculate accuracy
 accuracy = tf.keras.metrics.Accuracy()
 accuracy.update_state(class_labels[predicted_class], class_labels[np.argmax(prediction[0])])
-print("Accuracy: {:.2f}%".format(accuracy.result().numpy() * 100))
+print("Accuracy: {:.2f}%".format(prediction[0][predicted_class] * 100))
 
 # The predicted label for the new image is: 131
 # Close the HDF5 file

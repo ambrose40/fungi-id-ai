@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Open the HDF5 dataset file
-h5f = h5py.File('D:/PROJLIB/Python/fungi_id/model/fungi_model_rgb_128.h5', 'r')
+h5f = h5py.File('/home/bob/fungi-id-ai/model/fungi_model_filtered_40.h5', 'r')
 
 # Load the data from the HDF5 file
 images = h5f['images'][:]
@@ -14,8 +14,8 @@ h5f.close()
 
 # Plot the first 5 images from the dataset
 plt.figure(figsize=(10, 10))
-for i in range(25):
-    plt.subplot(5, 5, i+1)
+for i in range(100):
+    plt.subplot(10, 10, i+1)
     plt.xticks([])
     plt.yticks([])
     plt.grid(False)

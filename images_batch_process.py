@@ -1,34 +1,56 @@
-# images_batch_process.py
 import cv2
 import h5py
 import numpy as np
 import os
-from sklearn.preprocessing import LabelEncoder
+import glob
+import pickle
 
 # Create lists to store all the image arrays and labels
 images_list = []
 labels_list = []
 
+texts = []
+
 # Set to store the processed filenames
 processed_filenames = set()
 processed_folders = set()
 # Directory containing the raw images
-images_dir = 'D:/PROJLIB/Python/fungi_id/images_gpu_128'
+images_dir = '/home/bob/fungi-id-ai/images_gpu_128'
 # Directory to store the processed images
-processed_dir = 'D:/PROJLIB/Python/fungi_id/model/fungi_model_rgb_128_full.h5'
+processed_dir = '/home/bob/fungi-id-ai/model/fungi_model_filtered_40.h5'
+
+# write list to binary file
+def write_list(a_list):
+    # store list in binary file so 'wb' mode
+    with open('/home/bob/fungi-id-ai/model/fungi_model_texts_filtered_40.bin', 'wb') as fp:
+        pickle.dump(a_list, fp)
+        print('Done writing list into a binary file')
+
+# Read list to memory
+def read_list():
+    # for reading also binary mode is important
+    with open('/home/bob/fungi-id-ai/model/fungi_model_texts_filtered_40.bin', 'rb') as fp:
+        n_list = pickle.load(fp)
+        return n_list
 
 def process_directory(dir):
     folder_name = os.path.basename(dir)
     # Loop through all the files in the folder
+    counter = len(glob.glob1(dir,'*.jpg'))
+    if counter < 40: 
+        return
     for filename in os.listdir(dir):
         # Check if the file is a jpeg image
         if filename.endswith('.jpg'):
+            label = filename.split("_")[0]
             file_path = os.path.join(dir, filename)
             # Check if the file has already been processed
             if file_path in processed_filenames:
                 continue
             processed_filenames.add(file_path)
-            processed_folders.add(folder_name)
+            if folder_name not in processed_folders:
+                processed_folders.add(folder_name)
+                texts.append(label)
             label_id = len(processed_folders) - 1
             try:
                 # Load the image using OpenCV
@@ -39,14 +61,14 @@ def process_directory(dir):
                 # No need to resize, all my images are already of 384x384 
                 # (the size I want to use for fungi AI object model)
                 # img = cv2.resize(img, (32, 32), interpolation=cv2.INTER_AREA)
-                img = img.astype('float32') / 255.0
+                # img = img.astype('float32') / 255.0
                 
                 # Add the processed image to the list
                 images_list.append(img)
                 
                 # Add the label for the image
                 # Replace 0 with the actual label for the image
-                label = filename.split("_")[0]
+                
             
                 labels_list.append(label_id)
 
@@ -77,6 +99,11 @@ try:
         f.create_dataset('labels', data=labels)
 except Exception as e:
     print(f"Error saving processed images and labels to file. Error: {e}")
+
+try:
+    write_list(texts)
+except Exception as e:
+    print(f"Error saving processed texts to file. Error: {e}")
 
 print("\nProcessing complete. Results:")
 print(f"Total files in images directory: {total_files}")

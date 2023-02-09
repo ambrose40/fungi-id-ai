@@ -1,14 +1,15 @@
 import cv2
 import os
+import glob
 import numpy as np
 import exifread
 import tensorflow as tf
 
 # Directory containing the raw images
-raw_images_dir = 'D:/Fungarium.backup'
+raw_images_dir = '/home/bob/source'
 # Directory to store the processed images
-processed_images_dir = 'D:/PROJLIB/Python/fungi_id/images_192'
-dim = 192
+processed_images_dir = '/home/bob/fungi-id-ai/images_256'
+dim = 256
 # Helper function to get date picture taken from image file
 def get_date_picture_taken(filename):
     with open(filename, 'rb') as f:
@@ -19,6 +20,9 @@ def get_date_picture_taken(filename):
 
 # Load the raw images
 def process_directory(dir):
+    counter = len(glob.glob1(dir,'*.jpg'))
+    if counter < 40: 
+        return
     images = []
     for filename in os.listdir(dir):
         file_path = os.path.join(dir, filename)
@@ -55,9 +59,7 @@ def process_directory(dir):
         processed_images.append(processed_image)
 
     # Save the processed images to disk
-    # processed_images_dir_new = os.path.join(processed_images_dir, os.path.relpath(dir, raw_images_dir))
-    processed_images_dir_new = os.path.join(processed_images_dir, os.path.basename(os.path.normpath(dir)))
-
+    processed_images_dir_new = os.path.join(processed_images_dir, os.path.relpath(dir, raw_images_dir))
     if not os.path.exists(processed_images_dir_new):
         os.makedirs(processed_images_dir_new)
         
