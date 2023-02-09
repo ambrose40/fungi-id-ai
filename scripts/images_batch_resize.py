@@ -1,15 +1,22 @@
 import cv2
 import os
 import glob
-import numpy as np
 import exifread
-import tensorflow as tf
+prefix = '/media/bob/WOLAND/'
+if os.name == 'nt':
+    prefix = 'D:/'
+if os.name == 'posix':
+    prefix = '/media/bob/WOLAND/'
 
 # Directory containing the raw images
-raw_images_dir = '/home/bob/source'
+raw_images_dir = prefix + 'Fungarium.backup'
 # Directory to store the processed images
-processed_images_dir = '/home/bob/fungi-id-ai/images_256'
 dim = 256
+if os.name == 'posix':
+    processed_images_dir = '/home/bob/fungi-id-ai/images_' + str(dim)
+if os.name == 'nt':
+    processed_images_dir = prefix + '/PROJLIB/Python/fungi-id-ai/images_' + str(dim)
+
 # Helper function to get date picture taken from image file
 def get_date_picture_taken(filename):
     with open(filename, 'rb') as f:
@@ -52,14 +59,14 @@ def process_directory(dir):
 
         cropped_image = image[start_y:end_y, start_x:end_x]
         # NOSONAR processed_image = cv2.resize(cropped_image, (dim, dim), interpolation=cv2.INTER_AREA)
-        with tf.device("/gpu:0"):
-            resized_image = tf.image.resize(tf.expand_dims(cropped_image, 0), (dim, dim), method='area')
-        processed_image = resized_image.numpy().squeeze()
-
+        # resized_image = tf.image.resize(tf.expand_dims(cropped_image, 0), (dim, dim), method='area')
+        # processed_image = resized_image.numpy().squeeze()
+        
+        processed_image = cv2.resize(cropped_image, (dim, dim), interpolation=cv2.INTER_AREA)
         processed_images.append(processed_image)
 
     # Save the processed images to disk
-    processed_images_dir_new = os.path.join(processed_images_dir, os.path.relpath(dir, raw_images_dir))
+    processed_images_dir_new = os.path.join(processed_images_dir, os.path.basename(os.path.normpath(dir)))
     if not os.path.exists(processed_images_dir_new):
         os.makedirs(processed_images_dir_new)
         

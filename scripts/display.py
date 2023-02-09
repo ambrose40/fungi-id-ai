@@ -1,10 +1,19 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import os
+
+batch_size = 32
+dim = 128
+if os.name == 'nt':
+    prefix = 'D:/'
+if os.name == 'posix':
+    prefix = '/media/bob/WOLAND/'
+if os.name == 'posix':
+    data_dir = '/home/bob/fungi-id-ai/images_' + str(dim)
+if os.name == 'nt':
+    data_dir = prefix + '/PROJLIB/Python/fungi-id-ai/images_' + str(dim)
 
 with tf.device("/cpu:0"):
-    batch_size = 32
-    dim = 128
-    data_dir = '/home/bob/fungi-id-ai/images_128/'
     train_ds = tf.keras.utils.image_dataset_from_directory(
         data_dir,
         validation_split=0.2,

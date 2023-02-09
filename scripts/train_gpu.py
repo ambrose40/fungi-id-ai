@@ -1,12 +1,22 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import os
 
 physical_devices = tf.config.list_physical_devices('GPU')
 print("Num GPUs:", len(physical_devices))
 
 batch_size = 32
 dim = 128
-data_dir = '/home/bob/fungi-id-ai/images_128/'
+
+if os.name == 'nt':
+    prefix = 'D:/'
+if os.name == 'posix':
+    prefix = '/media/bob/WOLAND/'
+if os.name == 'posix':
+    data_dir = '/home/bob/fungi-id-ai/images_' + str(dim)
+if os.name == 'nt':
+    data_dir = prefix + '/PROJLIB/Python/fungi-id-ai/images_' + str(dim)
+
 with tf.device("/gpu:0"):
     train_ds = tf.keras.utils.image_dataset_from_directory(
         data_dir,
@@ -47,8 +57,8 @@ with tf.device("/gpu:0"):
         [
             tf.keras.layers.RandomFlip("horizontal",
                             input_shape=(dim, dim, 3)),
-            tf.keras.layers.RandomRotation(0.1),
-            tf.keras.layers.RandomZoom(0.1),
+            tf.keras.layers.RandomRotation(0.18),
+            tf.keras.layers.RandomZoom(0.18),
         ]
     )
 
@@ -78,5 +88,10 @@ with tf.device("/gpu:0"):
         epochs=num_classes
     )
 
-    model.save('/home/bob/fungi-id-ai/model/fungi_pretrained_model_filtered_40.h5')
+    if os.name == 'posix':
+        path = '/home/bob/fungi-id-ai/model/fungi_pretrained_model_' + str(dim) + 'h5'
+    if os.name == 'nt':
+        path = prefix + '/PROJLIB/Python/fungi-id-ai/model/fungi_pretrained_model_' + str(dim) + 'h5'
+
+    model.save(path)
     model.summary()

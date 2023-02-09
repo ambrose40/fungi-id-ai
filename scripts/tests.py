@@ -1,11 +1,19 @@
 import tensorflow as tf
 import numpy as np
 import sys
-
+import os
 
 with tf.device("/gpu:0"):
     dim = 128
-    data_dir = '/home/bob/fungi-id-ai/images_128/'
+    if os.name == 'nt':
+        prefix = 'D:/'
+    if os.name == 'posix':
+        prefix = '/media/bob/WOLAND/'
+    if os.name == 'posix':
+        data_dir = '/home/bob/fungi-id-ai/images_' + str(dim)
+    if os.name == 'nt':
+        data_dir = prefix + '/PROJLIB/Python/fungi-id-ai/images_' + str(dim)
+
     image_url = sys.argv[1:]
     image_path = tf.keras.utils.get_file(origin=image_url)
 
@@ -25,7 +33,12 @@ with tf.device("/gpu:0"):
 
     class_names = train_ds.class_names
 
-    model = tf.keras.models.load_model('/home/bob/fungi-id-ai/model/fungi_pretrained_model_filtered_20.h5')
+    if os.name == 'posix':
+        path = '/home/bob/fungi-id-ai/model/fungi_pretrained_model_' + str(dim) + 'h5'
+    if os.name == 'nt':
+        path = prefix + '/PROJLIB/Python/fungi-id-ai/model/fungi_pretrained_model_' + str(dim) + 'h5'
+    
+    model = tf.keras.models.load_model(path)
 
     predictions = model.predict(img_array)
     score = tf.nn.softmax(predictions[0])
