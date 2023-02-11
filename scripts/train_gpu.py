@@ -1,12 +1,22 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import os
+import sys
 
 physical_devices = tf.config.list_physical_devices('GPU')
 print("Num GPUs:", len(physical_devices))
 
-batch_size = 32
-dim = 128
+args = sys.argv[1:]
+dim = int(args[0]) #128
+output_filename = args[1] #'fungi_pretrained_model'
+batch_size = int(args[2]) #32
+
+if dim == '':
+    dim = 128
+if output_filename == '':
+    output_filename = 'fungi_pretrained_model'
+if batch_size == '':
+    batch_size = 32
 
 if os.name == 'nt':
     prefix = 'D:/'
@@ -37,15 +47,6 @@ with tf.device("/gpu:0"):
     class_names = train_ds.class_names
     print(class_names)
 
-
-    plt.figure(figsize=(10, 10))
-    for images, labels in train_ds.take(1):
-        for i in range(9):
-            ax = plt.subplot(3, 3, i + 1)
-            plt.imshow(images[i].numpy().astype("uint8"))
-            plt.title(class_names[labels[i]])
-            plt.axis("off")
-
     AUTOTUNE = tf.data.AUTOTUNE
 
     train_ds = train_ds.cache().shuffle(1000).prefetch(buffer_size=AUTOTUNE)
@@ -64,16 +65,16 @@ with tf.device("/gpu:0"):
 
     model = tf.keras.Sequential([
         data_augmentation,
-        tf.keras.layers.Rescaling(1./255),
-        tf.keras.layers.Conv2D(16, 3, padding='same', activation='relu'),
+        tf.keras.layers.Rescaling(1./255, input_shape=(dim, dim, 3)),
+        tf.keras.layers.Conv2D(dim/8, 3, padding='same', activation='relu'),
         tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Conv2D(32, 3, padding='same', activation='relu'),
+        tf.keras.layers.Conv2D(dim/4, 3, padding='same', activation='relu'),
         tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Conv2D(64, 3, padding='same', activation='relu'),
+        tf.keras.layers.Conv2D(dim/2, 3, padding='same', activation='relu'),
         tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Dropout(0.2),
+        tf.keras.layers.Dropout(0.18),
         tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dense(dim, activation='relu'),
         tf.keras.layers.Dense(num_classes, name="outputs")
     ])
 
@@ -89,9 +90,9 @@ with tf.device("/gpu:0"):
     )
 
     if os.name == 'posix':
-        path = '/home/bob/fungi-id-ai/model/fungi_pretrained_model_' + str(dim) + 'h5'
+        path = '/home/bob/fungi-id-ai/model/' + output_filename + '_' + str(dim) + '.h5'
     if os.name == 'nt':
-        path = prefix + '/PROJLIB/Python/fungi-id-ai/model/fungi_pretrained_model_' + str(dim) + 'h5'
+        path = prefix + '/PROJLIB/Python/fungi-id-ai/model/' + output_filename + '_' + str(dim) + '.h5'
 
     model.save(path)
     model.summary()
