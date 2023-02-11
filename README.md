@@ -28,9 +28,9 @@ https://drive.google.com/drive/folders/1YnymU79AR4q0i7Ify9kPUt_cWZf81t0k - folde
 ### Model summary:
 ```
 Model: "sequential_1"
-
- Layer (type)                Output Shape              Param    
-
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
  sequential (Sequential)     (None, 256, 256, 3)       0         
                                                                  
  rescaling (Rescaling)       (None, 256, 256, 3)       0         
@@ -58,11 +58,11 @@ Model: "sequential_1"
                                                                  
  outputs (Dense)             (None, 33)                8481      
                                                                  
+=================================================================
 Total params: 33,656,417
-
 Trainable params: 33,656,417
-
 Non-trainable params: 0
+_________________________________________________________________
 ```
 
 ### Download:
