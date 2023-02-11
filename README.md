@@ -4,7 +4,7 @@ Fungi ID AI recognition by photo
 ## Keywords:
 keras, numpy, tensorflow, pyplot, opencv,
 
-dataset, h5, gpu, model,
+dataset, h5, gpu, model, python
 
 fungi, photo, id, recognition, ai.
 
