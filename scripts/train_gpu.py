@@ -23,7 +23,7 @@ if os.name == 'nt':
 if os.name == 'posix':
     prefix = '/media/bob/WOLAND/'
 if os.name == 'posix':
-    data_dir = '/home/bob/fungi-id-ai/images_' + str(dim)
+    data_dir = '/home/bob/fungi-id-ai/images_count25_dim' + str(dim)
 if os.name == 'nt':
     data_dir = prefix + '/PROJLIB/Python/fungi-id-ai/images_' + str(dim)
 
@@ -32,7 +32,7 @@ with tf.device("/gpu:0"):
         data_dir,
         validation_split=0.2,
         subset="training",
-        seed=123,
+        seed=6666,
         image_size=(dim, dim),
         batch_size=batch_size)
 
@@ -40,7 +40,7 @@ with tf.device("/gpu:0"):
         data_dir,
         validation_split=0.2,
         subset="validation",
-        seed=123,
+        seed=6666,
         image_size=(dim, dim),
         batch_size=batch_size)
 
@@ -54,25 +54,34 @@ with tf.device("/gpu:0"):
 
     num_classes = len(class_names)
 
+
     data_augmentation = tf.keras.Sequential(
         [
-            tf.keras.layers.RandomFlip("horizontal",
+            tf.keras.layers.RandomFlip("horizontal_and_vertical",
                             input_shape=(dim, dim, 3)),
-            tf.keras.layers.RandomRotation(0.18),
-            tf.keras.layers.RandomZoom(0.18),
+            tf.keras.layers.RandomRotation(0.22),
+            tf.keras.layers.RandomZoom(0.22),
+            # tf.keras.layers.RandomWidth(0.13),
+            # tf.keras.layers.RandomHeight(0.13),
+            tf.keras.layers.RandomContrast(factor=0.22), 
+            tf.keras.layers.RandomBrightness(factor=0.22)
         ]
     )
 
     model = tf.keras.Sequential([
         data_augmentation,
         tf.keras.layers.Rescaling(1./255, input_shape=(dim, dim, 3)),
-        tf.keras.layers.Conv2D(dim/8, 3, padding='same', activation='relu'),
+        tf.keras.layers.Conv2D(64, 3, padding='same', activation='relu'),
         tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Conv2D(dim/4, 3, padding='same', activation='relu'),
+        tf.keras.layers.Conv2D(96, 3, padding='same', activation='relu'),
         tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Conv2D(dim/2, 3, padding='same', activation='relu'),
+        tf.keras.layers.Conv2D(128, 3, padding='same', activation='relu'),
         tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Dropout(0.18),
+        tf.keras.layers.Conv2D(192, 3, padding='same', activation='relu'),
+        tf.keras.layers.MaxPooling2D(),
+        tf.keras.layers.Conv2D(256, 3, padding='same', activation='relu'),
+        tf.keras.layers.MaxPooling2D(),
+        tf.keras.layers.Dropout(0.13),
         tf.keras.layers.Flatten(),
         tf.keras.layers.Dense(dim, activation='relu'),
         tf.keras.layers.Dense(num_classes, name="outputs")

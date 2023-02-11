@@ -42,6 +42,8 @@ with tf.device("/gpu:0"):
     
     model = tf.keras.models.load_model(path)
 
+    model.summary()
+
     predictions = model.predict(img_array)
     scores = tf.nn.softmax(predictions[0])
     scores_numpy = scores.numpy()

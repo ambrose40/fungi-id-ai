@@ -129,10 +129,10 @@ dmypy.json
 .pyre/
 
 # source images_*
-images_128/
-images_128_old/
-images_192/
-images_256/
+images_*/
 
 # generated models
 model/
+
+# .zip
+*.zip

@@ -11,9 +11,9 @@ if os.name == 'posix':
 # Directory containing the raw images
 raw_images_dir = prefix + 'Fungarium.backup'
 # Directory to store the processed images
-dim = 256
+dim = 384
 if os.name == 'posix':
-    processed_images_dir = '/home/bob/fungi-id-ai/images_' + str(dim)
+    processed_images_dir = '/home/bob/fungi-id-ai/images_count25_dim' + str(dim)
 if os.name == 'nt':
     processed_images_dir = prefix + '/PROJLIB/Python/fungi-id-ai/images_' + str(dim)
 
@@ -28,7 +28,7 @@ def get_date_picture_taken(filename):
 # Load the raw images
 def process_directory(dir):
     counter = len(glob.glob1(dir,'*.jpg'))
-    if counter < 40: 
+    if counter < 25: 
         return
     images = []
     for filename in os.listdir(dir):
