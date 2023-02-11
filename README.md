@@ -26,7 +26,7 @@ https://drive.google.com/drive/folders/1YnymU79AR4q0i7Ify9kPUt_cWZf81t0k - folde
 ## Pre-trained model (h5):
 
 ### Model summary:
-
+```
 Model: "sequential_1"
 
  Layer (type)                Output Shape              Param    
@@ -63,6 +63,7 @@ Total params: 33,656,417
 Trainable params: 33,656,417
 
 Non-trainable params: 0
+```
 
 ### Download:
 
