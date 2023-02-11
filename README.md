@@ -58,9 +58,10 @@ Model: "sequential_1"
                                                                  
  outputs (Dense)             (None, 33)                8481      
                                                                  
-
 Total params: 33,656,417
+
 Trainable params: 33,656,417
+
 Non-trainable params: 0
 
 ### Download:
