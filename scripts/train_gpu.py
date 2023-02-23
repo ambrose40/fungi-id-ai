@@ -12,18 +12,18 @@ output_filename = args[1] #'fungi_pretrained_model'
 batch_size = int(args[2]) #32
 
 if dim == '':
-    dim = 128
+    dim = 256
 if output_filename == '':
-    output_filename = 'fungi_pretrained_model'
+    output_filename = 'fungi_trained_model'
 if batch_size == '':
-    batch_size = 32
+    batch_size = 8
 
 if os.name == 'nt':
     prefix = 'D:/'
 if os.name == 'posix':
     prefix = '/media/bob/WOLAND/'
 if os.name == 'posix':
-    data_dir = '/home/bob/fungi-id-ai/images_count25_dim' + str(dim)
+    data_dir = '/home/bob/fungi-id-ai/images_30_' + str(dim)
 if os.name == 'nt':
     data_dir = prefix + '/PROJLIB/Python/fungi-id-ai/images_' + str(dim)
 
@@ -55,18 +55,20 @@ with tf.device("/gpu:0"):
     num_classes = len(class_names)
 
 
-    data_augmentation = tf.keras.Sequential(
-        [
-            tf.keras.layers.RandomFlip("horizontal_and_vertical",
-                            input_shape=(dim, dim, 3)),
-            tf.keras.layers.RandomRotation(0.22),
-            tf.keras.layers.RandomZoom(0.22),
-            # tf.keras.layers.RandomWidth(0.13),
-            # tf.keras.layers.RandomHeight(0.13),
-            tf.keras.layers.RandomContrast(factor=0.22), 
-            tf.keras.layers.RandomBrightness(factor=0.22)
-        ]
-    )
+    in_shape = (dim, dim, 3)
+    # base_model = tf.keras.applications.resnet50.ResNet50(include_top=False, weights='imagenet', input_shape=in_shape)
+
+    data_augmentation = tf.keras.Sequential([
+        tf.keras.layers.RandomFlip('horizontal'),
+        tf.keras.layers.RandomRotation(0.44),
+        tf.keras.layers.RandomZoom(0.25),
+        tf.keras.layers.RandomContrast(factor=0.2), 
+        tf.keras.layers.RandomBrightness(factor=0.2)
+    ])
+
+    callbacks = [tf.keras.callbacks.EarlyStopping(patience=10,
+                                               monitor='val_accuracy',
+                                               restore_best_weights=True)]
 
     model = tf.keras.Sequential([
         data_augmentation,
@@ -88,14 +90,15 @@ with tf.device("/gpu:0"):
     ])
 
     # Compile the model
-    model.compile(optimizer='adam',
+    model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001),
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
     history = model.fit(
         train_ds,
         validation_data=val_ds,
-        epochs=num_classes
+        epochs=num_classes*10,
+        #callbacks=callbacks
     )
 
     if os.name == 'posix':

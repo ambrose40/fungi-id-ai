@@ -11,11 +11,12 @@ with tf.device("/gpu:0"):
     if os.name == 'posix':
         prefix = '/media/bob/WOLAND/'
     if os.name == 'posix':
-        data_dir = '/home/bob/fungi-id-ai/images_' + str(dim)
+        data_dir = '/home/bob/fungi-id-ai/images_30_' + str(dim)
     if os.name == 'nt':
         data_dir = prefix + '/PROJLIB/Python/fungi-id-ai/images_' + str(dim)
     print(sys.argv[1:])
     image_url = sys.argv[1:][0]
+    filename = sys.argv[1:][1]
     print(image_url)
     image = tf.keras.utils.get_file(str(hash(image_url)), origin=str(image_url))
 
@@ -30,15 +31,15 @@ with tf.device("/gpu:0"):
             data_dir,
             validation_split=0,
             image_size=(dim, dim),
-            batch_size=256)
+            batch_size=512)
 
     class_names = train_ds.class_names
     labels = train_ds
 
     if os.name == 'posix':
-        path = '/home/bob/fungi-id-ai/model/fungi_id_model_' + str(dim) + '.h5'
+        path = '/home/bob/fungi-id-ai/model/' + filename + '_' + str(dim) + '.h5'
     if os.name == 'nt':
-        path = prefix + '/PROJLIB/Python/fungi-id-ai/model/fungi_id_model_' + str(dim) + '.h5'
+        path = prefix + '/PROJLIB/Python/fungi-id-ai/model/fungi_id_resnet50_model_' + str(dim) + '.h5'
     
     model = tf.keras.models.load_model(path)
 
