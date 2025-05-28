@@ -13,16 +13,15 @@ fungi, photo, id, recognition, ai.
 
 ### 33 fungi species with photos count in each folder >=40 (resized to 256x256) - 1971 images total:
 
+https://drive.google.com/file/d/1bBfDrTErmaiZyXysZLHhV9KYam8FKtaj/view - .zip
 
-https://drive.google.com/file/d/1EK_pZeSHQkDMUV4sy918tffr-G9mZQC0/view - .zip
-
-https://drive.google.com/drive/folders/1pIJznjmFhs3n6Gsvre60H4WobovwVgRB - folder 
+https://drive.google.com/drive/folders/1oYy6H3CRx6N89HNRZhPOaXEjubI2T1eF - folder 
 
 ### 496 fungi species with no photos count filter (>=1) (resized to 128x128) - 7572 images total:
 
-https://drive.google.com/file/d/1aOYh0IMxQgXNihY7GARD3cp_L6VdpA_8/view - .zip
+https://drive.google.com/file/d/1vZshtPGad_QPTNx2YrTecdCYKQj-dxnD/view - .zip
 
-https://drive.google.com/drive/folders/1YnymU79AR4q0i7Ify9kPUt_cWZf81t0k - folder 
+https://drive.google.com/drive/folders/1ya4f5K4DLJNsD-fGG0tNyisZNEk7ge4K - folder 
 
 ## Pre-trained model (h5):
 
@@ -68,6 +67,6 @@ _________________________________________________________________
 
 ### Download:
 
-https://drive.google.com/file/d/11sytuJvpxeyk663KzsCpg6rpZLX-aHp7/view - .zip
+https://drive.google.com/file/d/1Lg7xGaeXeRX4IZAVriDyXwWcf65aGf3w/view - .zip
 
-https://drive.google.com/drive/folders/1Ge7lgXrQ6pIHGrWPa1lpBKgtQJuetk-Y - folder 
+https://drive.google.com/drive/folders/1axdzaJgrHk4E7d1ccuI-LtY9KywO7MHx - folder 
